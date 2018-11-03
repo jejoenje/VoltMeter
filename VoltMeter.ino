@@ -9,6 +9,7 @@
 #include <TM1637Display.h>
 
 #define NUM_SAMPLES 50
+#define VOLT_CORRECTION 4.5
 // Module connection pins (Digital Pins)
 #define CLK 9
 #define DIO 8
@@ -22,8 +23,8 @@ float Vout = 0.00;
 float Vin = 0.00;
 float refvcc = 0;
 float test = 0;
-float R1 = 100400.00; // resistance of R1 (100K) 
-float R2 = 9990.00; // resistance of R2 (10K) 
+float R1 = 99500.00; // resistance of R1 (100K) 
+float R2 = 9970.00; // resistance of R2 (10K) 
 int val = 0;
 float sum = 0;
 unsigned char sample_count = 0;     
@@ -112,7 +113,9 @@ void loop(){
    if (Vin<0.09)//condition 
    {
      Vin=0.00;//statement to quash undesired reading !
-  } 
+   } 
+
+  Vin = Vin + (Vin/float(100))*float(VOLT_CORRECTION);
 
   whole = Vin;
   rem = (Vin-whole)*100;
