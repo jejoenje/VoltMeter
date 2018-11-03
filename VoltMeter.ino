@@ -16,6 +16,7 @@
 TM1637Display display(CLK, DIO);
 
 int analogInput = 1;
+int lightInput = 0;
 
 float Vout = 0.00;
 float Vin = 0.00;
@@ -29,6 +30,8 @@ unsigned char sample_count = 0;
 int k;
 int whole = 0;
 int rem = 0;
+int sensorValue = 0;
+int light = 0;
 
 long readVcc() {
   long result;
@@ -43,8 +46,15 @@ long readVcc() {
   return result;
 }
 
+int measureLight() {
+  sensorValue = analogRead(lightInput);
+  return(sensorValue);
+}
+
 void setup(){
    pinMode(analogInput, INPUT); //assigning the input port
+   pinMode(lightInput, INPUT); //assigning the input port
+   
    Serial.begin(9600); //BaudRate
    // Brightness: Appears to be 1-3 only
    display.setBrightness(3);
@@ -83,12 +93,17 @@ void loop(){
 
   whole = Vin;
   rem = (Vin-whole)*100;
+
+  light = measureLight();
+  
   Serial.print("V = ");
   Serial.print(Vin);
   Serial.print(", ref = ");
   Serial.print(refvcc);
   Serial.print(", test = ");
   Serial.print(test);
+  Serial.print(", light = ");
+  Serial.print(light);
   Serial.println();
 
   display.showNumberDecEx(whole, (0x80 >> 3), false, 2, 0);
