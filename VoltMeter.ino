@@ -46,7 +46,8 @@ long readVcc() {
 void setup(){
    pinMode(analogInput, INPUT); //assigning the input port
    Serial.begin(9600); //BaudRate
-   display.setBrightness(0x0f);
+   // Brightness: Appears to be 1-3 only
+   display.setBrightness(3);
    delay(1000);
 }
 
