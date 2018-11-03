@@ -9,7 +9,7 @@
 #include <TM1637Display.h>
 
 #define NUM_SAMPLES 50
-#define VOLT_CORRECTION 4.5
+#define VOLT_CORRECTION 4.25
 // Module connection pins (Digital Pins)
 #define CLK 9
 #define DIO 8
