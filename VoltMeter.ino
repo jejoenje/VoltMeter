@@ -31,7 +31,8 @@ int k;
 int whole = 0;
 int rem = 0;
 int sensorValue = 0;
-int light = 0;
+int light = 2;
+int defaultLight = 2;
 
 long readVcc() {
   long result;
@@ -46,9 +47,27 @@ long readVcc() {
   return result;
 }
 
-int measureLight() {
-  sensorValue = analogRead(lightInput);
-  return(sensorValue);
+int adjustBrightness() {
+
+  float currentMeasure = 0;
+  int measureCount = 0;
+  defaultLight = 2;
+
+  while (measureCount < NUM_SAMPLES) {
+    currentMeasure += analogRead(lightInput);
+    measureCount++;
+    delay(10);
+  }
+  sensorValue = currentMeasure/(NUM_SAMPLES);
+
+  if(sensorValue < 800) {
+    defaultLight = 1;
+  }
+  if(sensorValue > 990) {
+    defaultLight = 3;
+  }
+
+  return(defaultLight);
 }
 
 void setup(){
@@ -57,7 +76,8 @@ void setup(){
    
    Serial.begin(9600); //BaudRate
    // Brightness: Appears to be 1-3 only
-   display.setBrightness(3);
+   light = adjustBrightness();
+   display.setBrightness(light);
    delay(1000);
 }
 
@@ -66,6 +86,9 @@ void loop(){
 //   refvcc = refvcc/1024;
 //   refvcc = 3.90;
 
+   light = adjustBrightness();
+   display.setBrightness(light);
+    
    while (sample_count < NUM_SAMPLES) {
      refvcc = readVcc()/float(1024.00);
      sum += refvcc;
@@ -93,8 +116,6 @@ void loop(){
 
   whole = Vin;
   rem = (Vin-whole)*100;
-
-  light = measureLight();
   
   Serial.print("V = ");
   Serial.print(Vin);
@@ -102,7 +123,7 @@ void loop(){
   Serial.print(refvcc);
   Serial.print(", test = ");
   Serial.print(test);
-  Serial.print(", light = ");
+  Serial.print(", brightval = ");
   Serial.print(light);
   Serial.println();
 
