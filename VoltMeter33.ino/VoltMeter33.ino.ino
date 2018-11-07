@@ -11,7 +11,7 @@
 
 TM1637Display display(CLK, DIO);
 
-int analogInput = A1;
+int analogInput = A1;s
 int lightInput = A0;
 float R1 = 99500.00; // resistance of R1 (100K) 
 float R2 = 9970.00; // resistance of R2 (10K) 
