@@ -5,13 +5,17 @@
 #include <TM1637Display.h>
 
 #define NUM_SAMPLES 50
-#define CLK 9
-#define DIO 8
+#define CLK1 9
+#define DIO1 8
+#define CLK2 6
+#define DIO2 5
 #define VOLT_CORRECTION 5.5
 
-TM1637Display display(CLK, DIO);
+TM1637Display display1(CLK1, DIO1);
+TM1637Display display2(CLK2, DIO2);
 
-int analogInput = A1;s
+
+int analogInput = A1;
 int lightInput = A0;
 float R1 = 99500.00; // resistance of R1 (100K) 
 float R2 = 9970.00; // resistance of R2 (10K) 
@@ -70,14 +74,17 @@ void setup() {
  pinMode(lightInput, INPUT); //assigning the input port
  Serial.begin(9600); //BaudRate
  light = adjustBrightness();
- display.setBrightness(light);
+ display1.setBrightness(light);
+ display2.setBrightness(light);
  delay(1000);
+ 
 }
 
 void loop() {
 
   light = adjustBrightness();
-  display.setBrightness(light);
+  display1.setBrightness(light);
+  display2.setBrightness(light);
   
   while (sample_count < NUM_SAMPLES) {
     refvcc = readVcc()/float(1024.00);
@@ -109,8 +116,11 @@ void loop() {
   whole = Vin;
   rem = (Vin-whole)*100;
 
-  display.showNumberDecEx(whole, (0x80 >> 3), false, 2, 0);
-  display.showNumberDecEx(rem, 0, true, 2, 2);
+  display1.showNumberDecEx(whole, (0x80 >> 3), false, 2, 0);
+  display1.showNumberDecEx(rem, 0, true, 2, 2);
+
+  display2.showNumberDecEx(whole, (0x80 >> 3), false, 2, 0);
+  display2.showNumberDecEx(rem, 0, true, 2, 2);
 
   Serial.print("refvcc = ");
   Serial.print(refvcc);
